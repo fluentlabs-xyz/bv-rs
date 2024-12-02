@@ -1,6 +1,7 @@
+use alloc::format;
+use iter::BlockIter;
 use Bits;
 use BlockType;
-use iter::BlockIter;
 
 use traits::get_masked_block;
 
@@ -19,26 +20,31 @@ impl<Block: BlockType> Bits for BitFill<Block> {
     }
 
     fn get_bit(&self, position: u64) -> bool {
-        assert!(position < self.len,
-                "BitFill::get_bit: out of bounds");
+        assert!(position < self.len, "BitFill::get_bit: out of bounds");
         self.block != Block::zero()
     }
 
     fn get_block(&self, position: usize) -> Self::Block {
-        assert!(position < self.block_len(),
-                "BitFill::get_block: out of bounds");
+        assert!(
+            position < self.block_len(),
+            "BitFill::get_block: out of bounds"
+        );
         get_masked_block(self, position)
     }
 
     fn get_raw_block(&self, position: usize) -> Self::Block {
-        assert!(position < self.block_len(),
-                "BitFill::get_raw_block: out of bounds");
+        assert!(
+            position < self.block_len(),
+            "BitFill::get_raw_block: out of bounds"
+        );
         self.block
     }
 
     fn get_bits(&self, position: u64, len: usize) -> Self::Block {
-        assert!(position + (len as u64) <= self.bit_len(),
-                "BitFill::get_bits: out of bounds");
+        assert!(
+            position + (len as u64) <= self.bit_len(),
+            "BitFill::get_bits: out of bounds"
+        );
         self.block
     }
 }

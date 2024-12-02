@@ -1,5 +1,9 @@
 use super::BitsMut;
-use storage::{BlockType, Address};
+use alloc::boxed::Box;
+use alloc::format;
+use alloc::vec::Vec;
+use core::assert;
+use storage::{Address, BlockType};
 use BitVec;
 
 /// Read-only bit vector operations.
@@ -58,9 +62,15 @@ pub trait Bits {
     ///
     /// Panics if `position` is out of bounds.
     fn get_block(&self, position: usize) -> Self::Block {
-        assert!(position < self.block_len(),
-                format!("Bits::get_block: out of bounds ({}/{})",
-                        position, self.block_len()));
+        assert!(
+            position < self.block_len(),
+            format!(
+                "Bits::get_block: out of bounds ({}/{})",
+                position,
+                self.block_len()
+            )
+            .as_str()
+        );
 
         let first_bit = Self::Block::mul_nbits(position);
         let bit_count = Self::Block::block_bits(self.bit_len(), position);
@@ -68,7 +78,7 @@ pub trait Bits {
         let mut result = Self::Block::zero();
         let mut mask = Self::Block::one();
 
-        for i in 0 .. bit_count as u64 {
+        for i in 0..bit_count as u64 {
             if self.get_bit(first_bit + i) {
                 result = result | mask;
             }
@@ -107,7 +117,7 @@ pub trait Bits {
 
         if margin >= count {
             let block = self.get_raw_block(address.block_index);
-            return block.get_bits(address.bit_offset, count)
+            return block.get_bits(address.bit_offset, count);
         }
 
         let extra = count - margin;
@@ -131,7 +141,7 @@ pub trait Bits {
 
 /// Gets a block using `get_raw_block` and then masks it appropriately.
 /// This can be used to implement `get_block` in terms of `get_raw_block`.
-pub (crate) fn get_masked_block<T: Bits>(bits: T, position: usize) -> T::Block {
+pub(crate) fn get_masked_block<T: Bits>(bits: T, position: usize) -> T::Block {
     let block_bits = T::Block::block_bits(bits.bit_len(), position);
     bits.get_raw_block(position).get_bits(0, block_bits)
 }
@@ -320,4 +330,3 @@ impl Bits for Vec<bool> {
         self.as_slice().get_bit(position)
     }
 }
-

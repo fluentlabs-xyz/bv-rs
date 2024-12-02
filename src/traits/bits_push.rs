@@ -1,4 +1,5 @@
 use super::BitsMut;
+use alloc::vec::Vec;
 use storage::BlockType;
 
 /// Bit vector operations that change the length.
@@ -27,7 +28,7 @@ pub trait BitsPush: BitsMut {
     fn push_block(&mut self, mut value: Self::Block) {
         self.align_block(false);
 
-        for _ in 0 .. Self::Block::nbits() {
+        for _ in 0..Self::Block::nbits() {
             self.push_bit(value & Self::Block::one() != Self::Block::zero());
             value = value >> 1;
         }
@@ -43,4 +44,3 @@ impl BitsPush for Vec<bool> {
         self.pop()
     }
 }
-

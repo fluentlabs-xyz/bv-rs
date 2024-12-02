@@ -1,7 +1,9 @@
+use alloc::boxed::Box;
+use alloc::vec;
 use BlockType;
 
-use std::cmp::min;
-use std::ptr;
+use core::cmp::min;
+use core::ptr;
 
 #[derive(Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
@@ -30,7 +32,7 @@ impl<Block: BlockType> Inner<Block> {
     fn invariant(&self) -> bool {
         match self.0 {
             Some(ref b) => b.len() > 0,
-            None        => true,
+            None => true,
         }
     }
 
@@ -51,7 +53,7 @@ impl<Block: BlockType> Inner<Block> {
 
         let mut result = vec![Block::zero(); new_cap].into_boxed_slice();
 
-        for i in 0 .. min(len, new_cap) {
+        for i in 0..min(len, new_cap) {
             result[i] = self.get_block(i);
         }
 
@@ -61,7 +63,7 @@ impl<Block: BlockType> Inner<Block> {
     pub fn len(&self) -> usize {
         match self.0 {
             Some(ref b) => b.len(),
-            None        => 0,
+            None => 0,
         }
     }
 
@@ -77,14 +79,14 @@ impl<Block: BlockType> Inner<Block> {
     pub fn as_ptr(&self) -> *const Block {
         match self.0 {
             Some(ref b) => b.as_ptr(),
-            None        => ptr::null(),
+            None => ptr::null(),
         }
     }
 
     pub fn as_mut_ptr(&mut self) -> *mut Block {
         match self.0 {
             Some(ref mut b) => b.as_mut_ptr(),
-            None            => ptr::null_mut(),
+            None => ptr::null_mut(),
         }
     }
 

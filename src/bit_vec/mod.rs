@@ -1,9 +1,11 @@
-use super::storage::*;
 use super::slice::*;
+use super::storage::*;
 use super::traits::*;
+use alloc::boxed::Box;
+use alloc::vec::Vec;
 
-use std::cmp::{max, Ordering};
-use std::ptr;
+use core::cmp::{max, Ordering};
+use core::ptr;
 
 mod inner;
 use self::inner::Inner;
@@ -162,7 +164,7 @@ impl<Block: BlockType> BitVec<Block> {
     /// Creates a new bit-vector filled with `value`, made up of `nblocks` blocks.
     #[inline]
     fn new_block_fill(value: bool, nblocks: usize) -> Self {
-        let block = if value {!Block::zero()} else {Block::zero()};
+        let block = if value { !Block::zero() } else { Block::zero() };
         Self::from_block(block, nblocks)
     }
 
@@ -170,7 +172,7 @@ impl<Block: BlockType> BitVec<Block> {
     fn from_block(init: Block, nblocks: usize) -> Self {
         BitVec {
             bits: Inner::new(init, nblocks),
-            len:  Block::mul_nbits(nblocks),
+            len: Block::mul_nbits(nblocks),
         }
     }
 
@@ -195,7 +197,7 @@ impl<Block: BlockType> BitVec<Block> {
         unsafe {
             let ptr = vec.as_mut_ptr();
 
-            for i in 0 .. block_len {
+            for i in 0..block_len {
                 ptr::write(ptr.offset(i as isize), bits.get_raw_block(i));
             }
 
@@ -457,10 +459,8 @@ impl<Block: BlockType> BitVec<Block> {
     /// ```
     pub fn resize(&mut self, len: u64, value: bool) {
         match len.cmp(&self.len) {
-            Ordering::Less => {
-                self.len = len
-            },
-            Ordering::Equal => { },
+            Ordering::Less => self.len = len,
+            Ordering::Equal => {}
             Ordering::Greater => {
                 {
                     let growth = len - self.len();
@@ -469,13 +469,13 @@ impl<Block: BlockType> BitVec<Block> {
 
                 self.align_block(value);
 
-                let block = if value {!Block::zero()} else {Block::zero()};
+                let block = if value { !Block::zero() } else { Block::zero() };
                 while self.len < len {
                     self.push_block(block);
                 }
 
                 self.len = len;
-            },
+            }
         }
     }
 
@@ -499,9 +499,7 @@ impl<Block: BlockType> BitVec<Block> {
         // that all the bits be in bounds. If `self.len == 0` then there are no
         // bits to access, so it's okay that the pointer dangles. Otherwise, the
         // bits from `0 .. self.len` are in bounds.
-        unsafe {
-            BitSlice::from_raw_parts(self.bits.as_ptr(), 0, self.len)
-        }
+        unsafe { BitSlice::from_raw_parts(self.bits.as_ptr(), 0, self.len) }
     }
 
     /// Gets a mutable slice to a `BitVec`.
@@ -522,9 +520,7 @@ impl<Block: BlockType> BitVec<Block> {
     /// ```
     pub fn as_mut_slice(&mut self) -> BitSliceMut<Block> {
         // We know this is safe for the same reason that `as_slice` is safe.
-        unsafe {
-            BitSliceMut::from_raw_parts(self.bits.as_mut_ptr(), 0, self.len)
-        }
+        unsafe { BitSliceMut::from_raw_parts(self.bits.as_mut_ptr(), 0, self.len) }
     }
 
     /// Gets the value of the bit at the given position.
