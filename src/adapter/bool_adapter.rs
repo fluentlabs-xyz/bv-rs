@@ -126,23 +126,23 @@ macro_rules! impl_for_bool_adapter {
 }
 
 impl_for_bool_adapter! {
-    impl[    Block: BlockType] Bits     for BoolAdapter<Block, Vec<bool>>;
-    impl[    Block: BlockType] BitsMut  for BoolAdapter<Block, Vec<bool>>;
-    impl[    Block: BlockType] BitsPush for BoolAdapter<Block, Vec<bool>>;
+    impl[    Block: BlockType + 'static] Bits     for BoolAdapter<Block, Vec<bool>>;
+    impl[    Block: BlockType + 'static] BitsMut  for BoolAdapter<Block, Vec<bool>>;
+    impl[    Block: BlockType + 'static] BitsPush for BoolAdapter<Block, Vec<bool>>;
 
-    impl['a, Block: BlockType] Bits     for BoolAdapter<Block, &'a mut Vec<bool>>;
-    impl['a, Block: BlockType] BitsMut  for BoolAdapter<Block, &'a mut Vec<bool>>;
-    impl['a, Block: BlockType] BitsPush for BoolAdapter<Block, &'a mut Vec<bool>>;
+    impl['a, Block: BlockType + 'static] Bits     for BoolAdapter<Block, &'a mut Vec<bool>>;
+    impl['a, Block: BlockType + 'static] BitsMut  for BoolAdapter<Block, &'a mut Vec<bool>>;
+    impl['a, Block: BlockType + 'static] BitsPush for BoolAdapter<Block, &'a mut Vec<bool>>;
 
-    impl['a, Block: BlockType] Bits     for BoolAdapter<Block, &'a mut [bool]>;
-    impl['a, Block: BlockType] BitsMut  for BoolAdapter<Block, &'a mut [bool]>;
+    impl['a, Block: BlockType + 'static] Bits     for BoolAdapter<Block, &'a mut [bool]>;
+    impl['a, Block: BlockType + 'static] BitsMut  for BoolAdapter<Block, &'a mut [bool]>;
 
-    impl['a, Block: BlockType] Bits     for BoolAdapter<Block, &'a [bool]>;
+    impl['a, Block: BlockType + 'static] Bits     for BoolAdapter<Block, &'a [bool]>;
 }
 
 impl<Block, T, U> PartialEq<U> for BoolAdapter<Block, T>
 where
-    Block: BlockType,
+    Block: BlockType + 'static,
     U: Bits<Block = Block>,
     Self: Bits<Block = Block>,
 {

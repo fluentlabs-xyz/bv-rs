@@ -259,7 +259,7 @@ impl<'a, Block: BlockType> BitSlice<'a, Block> {
     /// ```
     /// use bv::*;
     ///
-    /// let bv: BitVec = bit_vec![ true, true, false, true ];
+    /// let bv: BitVec<usize> = bit_vec![usize ; true, true, false, true ];
     /// let slice = bv.bit_slice(..3);
     ///
     /// assert_eq!( bv.len(), 4 );
@@ -378,7 +378,7 @@ unsafe fn set_raw_bit<Block: BlockType>(bits: *mut Block, address: Address, valu
     ptr::write(ptr, new_block);
 }
 
-impl<'a, Block: BlockType> Bits for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> Bits for BitSlice<'a, Block> {
     type Block = Block;
 
     fn bit_len(&self) -> u64 {
@@ -414,7 +414,7 @@ impl<'a, Block: BlockType> Bits for BitSlice<'a, Block> {
     }
 }
 
-impl<'a, Block: BlockType> Bits for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> Bits for BitSliceMut<'a, Block> {
     type Block = Block;
 
     fn bit_len(&self) -> u64 {
@@ -446,7 +446,7 @@ impl<'a, Block: BlockType> Bits for BitSliceMut<'a, Block> {
     }
 }
 
-impl<'a, Block: BlockType> BitsMut for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitsMut for BitSliceMut<'a, Block> {
     fn set_bit(&mut self, position: u64, value: bool) {
         let address = self
             .span
@@ -479,11 +479,11 @@ impl<'a, Block: BlockType> BitsMut for BitSliceMut<'a, Block> {
 }
 
 impl_index_from_bits! {
-    impl['a, Block: BlockType] Index<u64> for BitSlice<'a, Block>;
-    impl['a, Block: BlockType] Index<u64> for BitSliceMut<'a, Block>;
+    impl['a, Block: BlockType + 'static] Index<u64> for BitSlice<'a, Block>;
+    impl['a, Block: BlockType + 'static] Index<u64> for BitSliceMut<'a, Block>;
 }
 
-impl<'a, Block: BlockType> BitSliceable<Range<u64>> for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<Range<u64>> for BitSlice<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: Range<u64>) -> Self {
@@ -500,7 +500,7 @@ impl<'a, Block: BlockType> BitSliceable<Range<u64>> for BitSlice<'a, Block> {
     }
 }
 
-impl<'a, Block: BlockType> BitSliceable<Range<u64>> for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<Range<u64>> for BitSliceMut<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: Range<u64>) -> Self {
@@ -521,7 +521,7 @@ impl<'a, Block: BlockType> BitSliceable<Range<u64>> for BitSliceMut<'a, Block> {
 }
 
 #[cfg(inclusive_range)]
-impl<'a, Block: BlockType> BitSliceable<RangeInclusive<u64>> for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeInclusive<u64>> for BitSlice<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: RangeInclusive<u64>) -> Self {
@@ -539,7 +539,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeInclusive<u64>> for BitSlice<'a, Bl
 }
 
 #[cfg(inclusive_range)]
-impl<'a, Block: BlockType> BitSliceable<RangeInclusive<u64>> for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeInclusive<u64>> for BitSliceMut<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: RangeInclusive<u64>) -> Self {
@@ -556,7 +556,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeInclusive<u64>> for BitSliceMut<'a,
     }
 }
 
-impl<'a, Block: BlockType> BitSliceable<RangeFrom<u64>> for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeFrom<u64>> for BitSlice<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: RangeFrom<u64>) -> Self {
@@ -565,7 +565,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeFrom<u64>> for BitSlice<'a, Block> 
     }
 }
 
-impl<'a, Block: BlockType> BitSliceable<RangeFrom<u64>> for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeFrom<u64>> for BitSliceMut<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: RangeFrom<u64>) -> Self {
@@ -574,7 +574,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeFrom<u64>> for BitSliceMut<'a, Bloc
     }
 }
 
-impl<'a, Block: BlockType> BitSliceable<RangeTo<u64>> for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeTo<u64>> for BitSlice<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: RangeTo<u64>) -> Self {
@@ -582,7 +582,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeTo<u64>> for BitSlice<'a, Block> {
     }
 }
 
-impl<'a, Block: BlockType> BitSliceable<RangeTo<u64>> for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeTo<u64>> for BitSliceMut<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: RangeTo<u64>) -> Self {
@@ -591,7 +591,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeTo<u64>> for BitSliceMut<'a, Block>
 }
 
 #[cfg(inclusive_range)]
-impl<'a, Block: BlockType> BitSliceable<RangeToInclusive<u64>> for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeToInclusive<u64>> for BitSlice<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, range: RangeToInclusive<u64>) -> Self {
@@ -600,7 +600,9 @@ impl<'a, Block: BlockType> BitSliceable<RangeToInclusive<u64>> for BitSlice<'a, 
 }
 
 #[cfg(inclusive_range)]
-impl<'a, Block: BlockType> BitSliceable<RangeToInclusive<u64>> for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeToInclusive<u64>>
+    for BitSliceMut<'a, Block>
+{
     type Slice = Self;
 
     fn bit_slice(self, range: RangeToInclusive<u64>) -> Self {
@@ -608,7 +610,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeToInclusive<u64>> for BitSliceMut<'
     }
 }
 
-impl<'a, Block: BlockType> BitSliceable<RangeFull> for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeFull> for BitSlice<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, _: RangeFull) -> Self {
@@ -616,7 +618,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeFull> for BitSlice<'a, Block> {
     }
 }
 
-impl<'a, Block: BlockType> BitSliceable<RangeFull> for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> BitSliceable<RangeFull> for BitSliceMut<'a, Block> {
     type Slice = Self;
 
     fn bit_slice(self, _: RangeFull) -> Self {
@@ -626,7 +628,7 @@ impl<'a, Block: BlockType> BitSliceable<RangeFull> for BitSliceMut<'a, Block> {
 
 impl<'a, Block, R> BitSliceable<R> for &'a [Block]
 where
-    Block: BlockType,
+    Block: BlockType + 'static,
     BitSlice<'a, Block>: BitSliceable<R, Block = Block, Slice = BitSlice<'a, Block>>,
 {
     type Slice = BitSlice<'a, Block>;
@@ -638,7 +640,7 @@ where
 
 impl<'a, Block, R> BitSliceable<R> for &'a mut [Block]
 where
-    Block: BlockType,
+    Block: BlockType + 'static,
     BitSliceMut<'a, Block>: BitSliceable<R, Block = Block, Slice = BitSliceMut<'a, Block>>,
 {
     type Slice = BitSliceMut<'a, Block>;
@@ -654,15 +656,15 @@ impl<'a, Other: Bits> PartialEq<Other> for BitSlice<'a, Other::Block> {
     }
 }
 
-impl<'a, Block: BlockType> Eq for BitSlice<'a, Block> {}
+impl<'a, Block: BlockType + 'static> Eq for BitSlice<'a, Block> {}
 
-impl<'a, Block: BlockType> PartialOrd for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> PartialOrd for BitSlice<'a, Block> {
     fn partial_cmp(&self, other: &BitSlice<Block>) -> Option<cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl<'a, Block: BlockType> Ord for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> Ord for BitSlice<'a, Block> {
     fn cmp(&self, other: &Self) -> cmp::Ordering {
         let iter1 = BlockIter::new(*self);
         let iter2 = BlockIter::new(*other);
@@ -676,21 +678,21 @@ impl<'a, Other: Bits> PartialEq<Other> for BitSliceMut<'a, Other::Block> {
     }
 }
 
-impl<'a, Block: BlockType> Eq for BitSliceMut<'a, Block> {}
+impl<'a, Block: BlockType + 'static> Eq for BitSliceMut<'a, Block> {}
 
-impl<'a, Block: BlockType> PartialOrd for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> PartialOrd for BitSliceMut<'a, Block> {
     fn partial_cmp(&self, other: &BitSliceMut<Block>) -> Option<cmp::Ordering> {
         Some(self.cmp(other))
     }
 }
 
-impl<'a, Block: BlockType> Ord for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> Ord for BitSliceMut<'a, Block> {
     fn cmp(&self, other: &Self) -> cmp::Ordering {
         self.as_bit_slice().cmp(&other.as_bit_slice())
     }
 }
 
-impl<'a, Block: BlockType + hash::Hash> hash::Hash for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static + hash::Hash> hash::Hash for BitSlice<'a, Block> {
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
         state.write_u64(self.bit_len());
         for block in BlockIter::new(self) {
@@ -699,13 +701,13 @@ impl<'a, Block: BlockType + hash::Hash> hash::Hash for BitSlice<'a, Block> {
     }
 }
 
-impl<'a, Block: BlockType + hash::Hash> hash::Hash for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static + hash::Hash> hash::Hash for BitSliceMut<'a, Block> {
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
         self.as_bit_slice().hash(state);
     }
 }
 
-impl<'a, Block: BlockType> fmt::Debug for BitSlice<'a, Block> {
+impl<'a, Block: BlockType + 'static> fmt::Debug for BitSlice<'a, Block> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "bit_vec![")?;
         if !self.is_empty() {
@@ -718,7 +720,7 @@ impl<'a, Block: BlockType> fmt::Debug for BitSlice<'a, Block> {
     }
 }
 
-impl<'a, Block: BlockType> fmt::Debug for BitSliceMut<'a, Block> {
+impl<'a, Block: BlockType + 'static> fmt::Debug for BitSliceMut<'a, Block> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.as_bit_slice().fmt(f)
     }
@@ -760,7 +762,7 @@ mod test {
 
     #[test]
     fn bit_slice_update_across_blocks() {
-        let mut bv: BitVec<u8> = bit_vec![ true; 20 ];
+        let mut bv: BitVec<u8> = bit_vec![u8; true; 20 ];
         bv.set_bit(3, false);
         bv.set_bit(7, false);
 

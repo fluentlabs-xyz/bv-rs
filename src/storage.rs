@@ -15,6 +15,8 @@ pub trait BlockType:
     + ops::Shl<usize, Output = Self>
     + ops::Shr<usize, Output = Self>
     + ops::Sub<Output = Self>
+    + bincode::Encode
+    + bincode::Decode<()>
 {
     /// The number of bits in a block.
     #[inline]

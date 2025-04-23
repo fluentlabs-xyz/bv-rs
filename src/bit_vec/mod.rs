@@ -46,22 +46,24 @@ mod test;
 /// assert_eq!(bv[1], false);
 /// assert_eq!(bv[2], true);
 /// ```
-#[derive(Clone)]
+#[derive(Clone, bincode::Encode, bincode::Decode)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
-pub struct BitVec<Block: BlockType = usize> {
+pub struct BitVec<Block: BlockType + 'static> {
     bits: Inner<Block>,
     len: u64,
 }
 // Invariant: self.invariant()
 
 #[cfg(feature = "serde")]
-impl<'de, Block: BlockType + serde::Deserialize<'de>> serde::Deserialize<'de> for BitVec<Block> {
+impl<'de, Block: BlockType + 'static + serde::Deserialize<'de>> serde::Deserialize<'de>
+    for BitVec<Block>
+{
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         #[derive(Deserialize)]
-        struct Unchecked<Block: BlockType> {
+        struct Unchecked<Block: BlockType + 'static> {
             bits: Inner<Block>,
             len: u64,
         }
@@ -77,13 +79,13 @@ impl<'de, Block: BlockType + serde::Deserialize<'de>> serde::Deserialize<'de> fo
     }
 }
 
-impl<Block: BlockType> Default for BitVec<Block> {
+impl<Block: BlockType + 'static> Default for BitVec<Block> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<Block: BlockType> BitVec<Block> {
+impl<Block: BlockType + 'static> BitVec<Block> {
     #[allow(dead_code)]
     fn invariant(&self) -> bool {
         return self.len <= Block::mul_nbits(self.bits.len());

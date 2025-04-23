@@ -3,7 +3,7 @@ use alloc::vec;
 
 #[test]
 fn bit_slicing() {
-    let v: BitVec<u8> = bit_vec![
+    let v: BitVec<u8> = bit_vec![ u8;
         false, true, true, false, true, false, false, true, true, false, false, true, false, true,
         true, false
     ];
@@ -29,7 +29,7 @@ fn bit_slicing() {
 
 #[test]
 fn resize() {
-    let mut v: BitVec<u8> = bit_vec![ true; 13 ];
+    let mut v: BitVec<u8> = bit_vec![ u8; true; 13 ];
     assert_eq!(v.len(), 13);
 
     v.resize(50, false);
@@ -75,7 +75,7 @@ fn shrink_to_fit() {
 
 #[test]
 fn into_boxed_slice() {
-    let v: BitVec<u8> = bit_vec![true, false, true];
+    let v: BitVec<u8> = bit_vec![u8; true, false, true];
     assert_eq!(v.capacity(), 8);
     let bs = v.into_boxed_slice();
     assert_eq!(bs.len(), 1);
@@ -103,7 +103,7 @@ fn as_mut_slice() {
 
 #[test]
 fn pop() {
-    let mut v: BitVec<u8> = bit_vec![true, false, true];
+    let mut v: BitVec<u8> = bit_vec![u8; true, false, true];
     assert_eq!(v.pop(), Some(true));
     assert_eq!(v.pop(), Some(false));
     assert_eq!(v.pop(), Some(true));
@@ -112,7 +112,7 @@ fn pop() {
 
 #[test]
 fn clear_and_is_empty() {
-    let mut v: BitVec<u8> = bit_vec![true, false, true];
+    let mut v: BitVec<u8> = bit_vec![u8; true, false, true];
     assert_eq!(v.len(), 3);
     assert!(!v.is_empty());
     v.clear();
@@ -132,7 +132,7 @@ fn push_bit_and_pop_bit() {
 
 #[test]
 fn set_through_slice() {
-    let mut v: BitVec<u8> = bit_vec![true, false, true];
+    let mut v: BitVec<u8> = bit_vec![u8; true, false, true];
 
     {
         let mut w = v.as_mut_slice().bit_slice(1..2);
@@ -140,12 +140,12 @@ fn set_through_slice() {
         w.set_bit(0, true);
     }
 
-    assert_eq!(v, bit_vec![true, true, true]);
+    assert_eq!(v, bit_vec![u8; true, true, true]);
 }
 
 #[test]
 fn set_bits_one_block_fastpath() {
-    let mut v: BitVec<u8> = bit_vec![false; 8];
+    let mut v: BitVec<u8> = bit_vec![u8; false; 8];
     v.set_bits(2, 4, 0b1111);
     assert_eq!(v.get_block(0), 0b00111100);
 }
@@ -166,7 +166,7 @@ fn from_bits() {
 
 #[test]
 fn from_bits_slice() {
-    let mut bits: BitVec = bit_vec![true; 20];
+    let mut bits: BitVec<usize> = bit_vec![usize; true; 20];
     bits.set_bit(3, false);
     let slice = bits.bit_slice(1..);
     let bv = BitVec::from_bits(&slice);
@@ -180,14 +180,14 @@ fn from_bits_slice() {
 
 #[test]
 fn disequality() {
-    let bv1: BitVec = bit_vec![true, true, false];
-    let bv2 = bit_vec![true, true];
+    let bv1: BitVec<usize> = bit_vec![usize; true, true, false];
+    let bv2 = bit_vec![usize; true, true];
     assert_ne!(bv1, bv2);
 }
 
 #[test]
 fn mixed_equality() {
-    let bv: BitVec<u8> = bit_vec![true, false, true];
+    let bv: BitVec<u8> = bit_vec![u8; true, false, true];
     let array: &[bool] = &[true, false, true];
     assert_eq!(bv, array);
 }

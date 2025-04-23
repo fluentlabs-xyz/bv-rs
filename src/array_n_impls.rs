@@ -1,14 +1,14 @@
 //! This module impls the `Bits`, `BitsMut` and `BitSliceable` traits
 //! for fixed-sized arrays of `BlockType`s.
 
-use {BlockType, Bits, BitsMut, BitSliceable};
+use {BitSliceable, Bits, BitsMut, BlockType};
 
 macro_rules! impl_traits_for_array {
     (
         $( $size:tt )+
     ) => {
         $(
-            impl<Block: BlockType> Bits for [Block; $size] {
+            impl<Block: BlockType + 'static> Bits for [Block; $size] {
                 type Block = Block;
 
                 fn bit_len(&self) -> u64 {
@@ -24,13 +24,13 @@ macro_rules! impl_traits_for_array {
                 }
             }
 
-            impl<Block: BlockType> BitsMut for [Block; $size] {
+            impl<Block: BlockType + 'static> BitsMut for [Block; $size] {
                 fn set_block(&mut self, position: usize, value: Block) {
                     self[position] = value;
                 }
             }
 
-            impl<'a, R, Block: BlockType> BitSliceable<R> for &'a [Block; $size]
+            impl<'a, R, Block: BlockType + 'static> BitSliceable<R> for &'a [Block; $size]
                 where &'a [Block]: BitSliceable<R, Block = Block> {
 
                 type Slice = <&'a [Block] as BitSliceable<R>>::Slice;
@@ -79,4 +79,3 @@ impl_traits_for_array! {
     32 64 128 256 512 1024 2048 4096
     8_192 16_384 32_768 65_536 131_072 262_144 524_288 1_048_576
 }
-

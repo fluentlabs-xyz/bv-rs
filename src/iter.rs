@@ -117,29 +117,29 @@ mod test {
 
     #[test]
     fn empty() {
-        let bv1: BitVec = bit_vec![];
-        let bv2: BitVec = bit_vec![];
+        let bv1: BitVec<usize> = bit_vec![usize;];
+        let bv2: BitVec<usize> = bit_vec![usize;];
         assert!(eq_iter(&bv1, &bv2));
     }
 
     #[test]
     fn same() {
-        let bv1: BitVec = bit_vec![true, false, true];
-        let bv2: BitVec = bit_vec![true, false, true];
+        let bv1: BitVec<usize> = bit_vec![usize; true, false, true];
+        let bv2: BitVec<usize> = bit_vec![usize; true, false, true];
         assert!(eq_iter(&bv1, &bv2));
     }
 
     #[test]
     fn different() {
-        let bv1: BitVec = bit_vec![true, false, false];
-        let bv2: BitVec = bit_vec![true, false, true];
+        let bv1: BitVec<usize> = bit_vec![usize; true, false, false];
+        let bv2: BitVec<usize> = bit_vec![usize; true, false, true];
         assert!(!eq_iter(&bv1, &bv2));
     }
 
     #[test]
     fn different_lengths() {
-        let bv1: BitVec = bit_vec![true, false, true, false];
-        let bv2: BitVec = bit_vec![true, false, true];
+        let bv1: BitVec<usize> = bit_vec![usize; true, false, true, false];
+        let bv2: BitVec<usize> = bit_vec![usize; true, false, true];
         assert!(!eq_iter(&bv1, &bv2));
     }
 }

@@ -5,9 +5,9 @@ use BlockType;
 use core::cmp::min;
 use core::ptr;
 
-#[derive(Clone)]
+#[derive(Clone, bincode::Encode, bincode::Decode)]
 #[cfg_attr(feature = "serde", derive(Serialize))]
-pub struct Inner<Block>(Option<Box<[Block]>>);
+pub struct Inner<Block: 'static>(Option<Box<[Block]>>);
 // Invariant: self.invariant()
 
 #[cfg(feature = "serde")]

@@ -21,7 +21,7 @@ use BitVec;
 /// [`get_block`]: #method.get_block
 pub trait Bits {
     /// The underlying block type used to store the bits of the vector.
-    type Block: BlockType;
+    type Block: BlockType + 'static;
 
     /// The length of the slice in bits.
     fn bit_len(&self) -> u64;
@@ -202,7 +202,7 @@ impl<'a, T: Bits + ?Sized> Bits for &'a mut T {
     }
 }
 
-impl<Block: BlockType> Bits for Box<dyn Bits<Block = Block>> {
+impl<Block: BlockType + 'static> Bits for Box<dyn Bits<Block = Block>> {
     type Block = Block;
 
     fn bit_len(&self) -> u64 {
@@ -230,7 +230,7 @@ impl<Block: BlockType> Bits for Box<dyn Bits<Block = Block>> {
     }
 }
 
-impl<Block: BlockType> Bits for Box<dyn BitsMut<Block = Block>> {
+impl<Block: BlockType + 'static> Bits for Box<dyn BitsMut<Block = Block>> {
     type Block = Block;
 
     fn bit_len(&self) -> u64 {
@@ -258,7 +258,7 @@ impl<Block: BlockType> Bits for Box<dyn BitsMut<Block = Block>> {
     }
 }
 
-impl<Block: BlockType> Bits for [Block] {
+impl<Block: BlockType + 'static> Bits for [Block] {
     type Block = Block;
 
     fn bit_len(&self) -> u64 {
@@ -279,7 +279,7 @@ impl<Block: BlockType> Bits for [Block] {
     }
 }
 
-impl<Block: BlockType> Bits for Vec<Block> {
+impl<Block: BlockType + 'static> Bits for Vec<Block> {
     type Block = Block;
 
     fn bit_len(&self) -> u64 {

@@ -99,7 +99,7 @@ impl<'a, T: BitsMut + ?Sized> BitsMut for &'a mut T {
     }
 }
 
-impl<Block: BlockType> BitsMut for Box<dyn BitsMut<Block = Block>> {
+impl<Block: BlockType + 'static> BitsMut for Box<dyn BitsMut<Block = Block>> {
     fn set_bit(&mut self, position: u64, value: bool) {
         (**self).set_bit(position, value);
     }
@@ -113,7 +113,7 @@ impl<Block: BlockType> BitsMut for Box<dyn BitsMut<Block = Block>> {
     }
 }
 
-impl<Block: BlockType> BitsMut for [Block] {
+impl<Block: BlockType + 'static> BitsMut for [Block] {
     fn set_bit(&mut self, position: u64, value: bool) {
         let address = Address::new::<Block>(position);
         let block = &mut self[address.block_index];
@@ -125,7 +125,7 @@ impl<Block: BlockType> BitsMut for [Block] {
     }
 }
 
-impl<Block: BlockType> BitsMut for Vec<Block> {
+impl<Block: BlockType + 'static> BitsMut for Vec<Block> {
     fn set_bit(&mut self, position: u64, value: bool) {
         <[Block]>::set_bit(&mut *self, position, value);
     }

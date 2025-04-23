@@ -12,7 +12,7 @@ pub struct BitFill<Block> {
     block: Block,
 }
 
-impl<Block: BlockType> Bits for BitFill<Block> {
+impl<Block: BlockType + 'static> Bits for BitFill<Block> {
     type Block = Block;
 
     fn bit_len(&self) -> u64 {
@@ -74,10 +74,10 @@ impl<T: Bits> PartialEq<T> for BitFill<T::Block> {
 }
 
 impl_index_from_bits! {
-    impl[Block: BlockType] Index<u64> for BitFill<Block>;
+    impl[Block: BlockType + 'static] Index<u64> for BitFill<Block>;
 }
 
 impl_bit_sliceable_adapter! {
-    impl[Block: BlockType] BitSliceable for BitFill<Block>;
-    impl['a, Block: BlockType] BitSliceable for &'a BitFill<Block>;
+    impl[Block: BlockType + 'static] BitSliceable for BitFill<Block>;
+    impl['a, Block: BlockType + 'static] BitSliceable for &'a BitFill<Block>;
 }

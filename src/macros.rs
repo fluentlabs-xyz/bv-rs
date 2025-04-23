@@ -15,8 +15,8 @@
 /// use bv::*;
 ///
 /// fn main() {
-///     let mut bv1: BitVec = bit_vec![ true; 3 ];
-///     let     bv2: BitVec = bit_vec![ true, false, true ];
+///     let mut bv1: BitVec<usize> = bit_vec![ true; 3 ];
+///     let     bv2: BitVec<usize> = bit_vec![ true, false, true ];
 ///
 ///     assert_ne!(bv1, bv2);
 ///     bv1.set_bit(1, false);
@@ -25,13 +25,13 @@
 /// ```
 #[macro_export]
 macro_rules! bit_vec {
-    ( $e:expr ; $n:expr ) => {
-        $crate::BitVec::new_fill($e, $n)
+    ( $typ:ty ; $e:expr ; $n:expr ) => {
+        $crate::BitVec::<$typ>::new_fill($e, $n)
     };
 
-    ( $( $e:expr ),* ) => {
+    ( $typ:ty ; $( $e:expr ),* ) => {
         {
-            let mut result = $crate::BitVec::new();
+            let mut result = $crate::BitVec::<$typ>::new();
             let _ = &mut result;
             $(
                 result.push($e);
@@ -40,22 +40,22 @@ macro_rules! bit_vec {
         }
     };
 
-    ( $( $e:expr, )* ) => {
-        bit_vec![ $($e),* ]
+    ( $typ:ty ; $( $e:expr, )* ) => {
+        bit_vec![ $typ ; $($e),* ]
     };
 }
 
 #[test]
 fn bit_vec_macro_allows_trailing_comma() {
-    let bv1: super::BitVec = bit_vec![true, false, true];
-    let bv2: super::BitVec = bit_vec![true, false, true,];
+    let bv1: super::BitVec<usize> = bit_vec![usize; true, false, true];
+    let bv2: super::BitVec<usize> = bit_vec![usize; true, false, true,];
     assert_eq!(bv1, bv2);
 }
 
 #[test]
 fn type_1_hygiene() {
     let result = true;
-    let bv: super::BitVec = bit_vec![result];
+    let bv: super::BitVec<usize> = bit_vec![usize; result];
     assert!(bv[0]);
 }
 

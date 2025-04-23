@@ -107,18 +107,18 @@ mod test {
 
     #[test]
     fn bit_and_assign() {
-        let mut bv1: BitVec = bit_vec![false, false, true, true];
-        let bv2: BitVec = bit_vec![false, true, true, false];
+        let mut bv1: BitVec<usize> = bit_vec![usize; false, false, true, true];
+        let bv2: BitVec<usize> = bit_vec![usize; false, true, true, false];
 
         bv1.bit_and_assign(&bv2);
-        assert_eq!(bv1, bit_vec![false, false, true, false]);
+        assert_eq!(bv1, bit_vec![usize; false, false, true, false]);
     }
 
     #[test]
     #[should_panic]
     fn bit_and_assign_bad_sizes() {
-        let mut bv1: BitVec = bit_vec![false, false, true, true, true];
-        let bv2: BitVec = bit_vec![false, true, true, false];
+        let mut bv1: BitVec<usize> = bit_vec![usize; false, false, true, true, true];
+        let bv2: BitVec<usize> = bit_vec![usize; false, true, true, false];
 
         bv1.bit_and_assign(&bv2);
     }
